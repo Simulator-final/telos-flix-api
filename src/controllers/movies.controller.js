@@ -15,9 +15,15 @@ const list = async (request, response) => {
 
 const getById = async (request, response) => {
   const { id } = request.params;
+  const { authorization } = request.headers;
+  const values = {};
+
+  if (!authorization) {
+    values.video = 0;
+  }
 
   try {
-    const movie = await MovieModel.findById(id);
+    const movie = await MovieModel.findById(id, values);
 
     if (!movie) {
       throw new Error();

@@ -2,21 +2,17 @@ const { Router } = require("express");
 
 const moviesController = require("../controllers/movies.controller");
 
-const { verifyAuthenticate } = require("../middlewares/verifyAuthentication");
+const userAuthenticated = require("../middlewares/userAuthenticated");
+const verifyUserRole = require("../middlewares/verifyUserRole");
 
 const verifyUserRole = require("../middlewares/verifyUserRole");
 
 const routes = Router();
 
 routes.get("/movies", moviesController.list);
-routes.get("/movies/:id", moviesController.getById);
+routes.get("/movies/:id", userAuthenticated, moviesController.getById);
 
-routes.post(
-  "/movies",
-  verifyAuthenticate,
-  verifyUserRole,
-  moviesController.create
-);
+routes.post("/movies", verifyUserRole, moviesController.create);
 
 routes.put("/movies/:id", moviesController.update);
 
