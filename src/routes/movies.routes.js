@@ -3,7 +3,6 @@ const { Router } = require("express");
 const moviesController = require("../controllers/movies.controller");
 
 const userAuthenticated = require("../middlewares/userAuthenticated");
-const verifyUserRole = require("../middlewares/verifyUserRole");
 
 const verifyUserRole = require("../middlewares/verifyUserRole");
 
