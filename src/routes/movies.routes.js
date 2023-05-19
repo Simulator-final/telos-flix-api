@@ -8,6 +8,7 @@ const routes = Router();
 
 routes.get("/movies", moviesController.list);
 routes.get("/movies/:id", moviesController.getById);
+routes.get("/movies-genres", moviesController.listGenres);
 
 routes.post("/movies", verifyAuthenticate, moviesController.create);
 
