@@ -34,7 +34,7 @@ const getById = async (request, response) => {
 
 const create = async (request, response) => {
   const { title, description, year, genres, image, video } = request.body;
-
+  
   try {
     const movie = await MovieModel.create({
       title,

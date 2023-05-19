@@ -17,6 +17,7 @@ const UserSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
+      selected: false,
     },
     age: {
       type: Number,
@@ -49,4 +50,4 @@ UserSchema.pre("findOneAndUpdate", async function (next) {
   return next();
 });
 
-module.exports = mongoose.model("users", UserSchema);
+module.exports = mongoose.model("User", UserSchema, "users");
