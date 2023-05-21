@@ -33,7 +33,14 @@ const getById = async (request, response) => {
 };
 
 const create = async (request, response) => {
-  const { name, email, password, age } = request.body;
+  const { name, email, password, age, role } = request.body;
+
+  if (role != "customer" && role != "admin") {
+    return response.status(400).json({
+      error: "@users/create",
+      message: "Invalid role",
+    });
+  }
 
   try {
     const user = await UserModel.create({
@@ -41,9 +48,12 @@ const create = async (request, response) => {
       email,
       password,
       age,
+      role,
     });
 
-    return response.status(201).json(user);
+    const userWithoutRole = await UserModel.findById(user.id, { role: 0 });
+
+    return response.status(201).json(userWithoutRole);
   } catch (err) {
     return response.status(400).json({
       error: "@users/create",

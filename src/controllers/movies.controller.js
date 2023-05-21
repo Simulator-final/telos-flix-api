@@ -28,9 +28,35 @@ const listGenres = async (request, response) => {
 
 const list = async (request, response) => {
   try {
-    const movies = await MovieModel.find();
+    const { title, genres } = request.query;
 
-    return response.json(movies);
+    const query = {};
+
+    if (title) {
+      query.title = new RegExp(title, "i");
+    }
+
+    if (genres) {
+      query.genres = new RegExp(genres, "i");
+    }
+
+    const movies = await MovieModel.find(query).exec();
+    const count = await MovieModel.countDocuments(query);
+
+    const pages = [];
+    const limit = 10;
+    for (let i = 0; i < Math.ceil(count / limit); i++) {
+      const pageData = {
+        page: i + 1,
+        movies: movies.slice(i * limit, (i + 1) * limit)
+      }
+      pages.push(pageData);
+    }
+
+    return response.json({
+      totalPages: pages.length,
+      pages,
+    });
   } catch (err) {
     return response.status(400).json({
       error: "@movies/list",
@@ -41,9 +67,15 @@ const list = async (request, response) => {
 
 const getById = async (request, response) => {
   const { id } = request.params;
+  const { authorization } = request.headers;
+  const values = {};
+
+  if (!authorization) {
+    values.video = 0;
+  }
 
   try {
-    const movie = await MovieModel.findById(id);
+    const movie = await MovieModel.findById(id, values);
 
     if (!movie) {
       throw new Error();
