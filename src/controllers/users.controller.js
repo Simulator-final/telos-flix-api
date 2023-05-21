@@ -42,19 +42,29 @@ const create = async (request, response) => {
     });
   }
 
-  try {
+  try{
+    if(!request.user){
+      const user = await UserModel.create({
+        name,
+        email,
+        password,
+        role: "customer",
+        age,
+      });
+      return response.status(201).json(user);
+    }
+  
     const user = await UserModel.create({
       name,
       email,
       password,
+      role: "admin",
       age,
-      role,
     });
-
-    const userWithoutRole = await UserModel.findById(user.id, { role: 0 });
-
-    return response.status(201).json(userWithoutRole);
-  } catch (err) {
+      const userWithoutRole = await UserModel.findById(user.id, { role: 0 });
+  
+      return response.status(201).json(userWithoutRole);
+    }  catch (err) {
     return response.status(400).json({
       error: "@users/create",
       message: err.message || "Failed to create user",
