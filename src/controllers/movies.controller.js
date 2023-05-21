@@ -1,5 +1,31 @@
 const MovieModel = require("../model/movie.model");
 
+// Function to fix string
+const fixStrings = (genres) => {
+  genres = genres.map((genre) => genre.toLowerCase());
+  genres = genres.map((genre) => {
+    const words = genre.split(" ");
+    const wordsCapitalized = words.map(
+      (word) => word.charAt(0).toUpperCase() + word.substring(1)
+    );
+    return wordsCapitalized.join(" ");
+  });
+  return genres;
+};
+
+const listGenres = async (request, response) => {
+  try {
+    const genres = await MovieModel.distinct("genres");
+
+    return response.json(genres);
+  } catch (err) {
+    return response.status(400).json({
+      error: "@movies/listGenres",
+      message: err.message || "Failed to list genres",
+    });
+  }
+};
+
 const list = async (request, response) => {
   try {
     const { title, genres } = request.query;
@@ -72,7 +98,7 @@ const create = async (request, response) => {
       title,
       description,
       year,
-      genres,
+      genres: fixStrings(genres),
       image,
       video,
     });
@@ -97,7 +123,7 @@ const update = async (request, response) => {
         title,
         description,
         year,
-        genres,
+        genres: fixStrings(genres),
         image,
         video,
       },
@@ -135,6 +161,7 @@ const remove = async (request, response) => {
 };
 
 module.exports = {
+  listGenres,
   list,
   getById,
   create,

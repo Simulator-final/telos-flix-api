@@ -9,6 +9,7 @@ const verifyUserRole = require("../middlewares/verifyUserRole");
 const routes = Router();
 
 routes.get("/movies", moviesController.list);
+routes.get("/movies-genres", moviesController.listGenres);
 routes.get("/movies/:id", userAuthenticated, moviesController.getById);
 
 routes.post("/movies", verifyUserRole, moviesController.create);
